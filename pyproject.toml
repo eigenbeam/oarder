@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "oarder"
+version = "0.1.0"
+description = ""
+authors = ["Kevin W. Beam <kevin.beam@colorado.edu>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+harmony-py = "^0.4.15"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
