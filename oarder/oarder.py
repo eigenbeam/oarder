@@ -5,7 +5,7 @@ import sys
 from harmony import BBox, Client, Collection, Request, Environment
 
 
-def oarder():
+def oarder(collection):
     collections = {
         "atl03": Collection(id="C1256407609-NSIDC_CUAT"),
         "atl06": Collection(id="C1256358217-NSIDC_CUAT"),
@@ -61,8 +61,6 @@ def oarder():
     password = getpass()
     harmony_client = Client(auth=(username, password), env=Environment.UAT)
 
-    collection = "atl03"
-
     request = Request(
         collection=collections[collection],
         spatial=bounding_boxes[collection],
@@ -86,7 +84,7 @@ def oarder():
 
 if __name__ == "__main__":
     if len(sys.argv) > 1:
-        oarder()
+        oarder(sys.argv[1])
     else:
         print("Usage: oarder.py collection")
         exit(1)
