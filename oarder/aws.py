@@ -15,9 +15,7 @@ class OrderRequest(BaseModel):
 
 
 def handler(event, context):
-    print(event)
     order_request = OrderRequest(**event)
-    print(order_request.model_dump())
 
     collection_name = order_request.collection_name.lower()
 
