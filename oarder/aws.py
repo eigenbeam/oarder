@@ -15,11 +15,11 @@ class OrderRequest(BaseModel):
 
 
 def handler(event, context):
-    body = event["body"]
-    order_request = OrderRequest(**body)
+    print(event)
+    order_request = OrderRequest(**event)
     print(order_request.model_dump())
 
-    collection_name = order_request.collection_name
+    collection_name = order_request.collection_name.lower()
 
     order.oarder({
         "collection": order.collections[collection_name],

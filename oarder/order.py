@@ -1,5 +1,8 @@
 import datetime as dt
-from getpass import getpass, getuser
+import json
+
+import boto3
+from botocore.exceptions import ClientError
 
 from harmony import BBox, Client, Collection, Request, Environment
 
@@ -60,9 +63,7 @@ def oarder(order_request):
     spatial = order_request["spatial"]
     temporal = order_request["temporal"]
 
-    username = getuser()
-    password = getpass()
-    harmony_client = Client(auth=(username, password), env=Environment.UAT)
+    harmony_client = Client(token=edl_token(), env=Environment.UAT)
 
     request = Request(
         collection=collection, spatial=spatial, temporal=temporal, skip_preview=True
@@ -72,11 +73,34 @@ def oarder(order_request):
     print("Sending request: " + harmony_client.request_as_url(request))
 
     job_id = harmony_client.submit(request)
-    results = harmony_client.result_json(job_id, show_progress=True)
-    print(results)
+    print("Successfully submitted Harmony job: " + job_id)
 
-    futures = harmony_client.download_all(job_id)
-    filenames = [f.result() for f in futures]
+    # results = harmony_client.result_json(job_id, show_progress=True)
+    # futures = harmony_client.download_all(job_id)
+    # filenames = [f.result() for f in futures]
+    # for filename in filenames:
+    #     print(filename)
 
-    for filename in filenames:
-        print(filename)
+
+# Use this code snippet in your app.
+# If you need more information about configurations
+# or implementing the sample code, visit the AWS docs:
+# https://aws.amazon.com/developer/language/python/
+
+
+def edl_token():
+    secret_name = "oa_edl"
+    region_name = "us-west-2"
+
+    session = boto3.session.Session()
+    client = session.client(service_name="secretsmanager", region_name=region_name)
+
+    try:
+        get_secret_value_response = client.get_secret_value(SecretId=secret_name)
+    except ClientError as e:
+        raise e
+
+    value = get_secret_value_response["SecretString"]
+    secret = json.loads(value)
+
+    return secret.get("token")

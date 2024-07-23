@@ -13,4 +13,3 @@ RUN poetry install
 
 COPY . .
 RUN poetry run make oarder.zip
-COPY oarder.zip .

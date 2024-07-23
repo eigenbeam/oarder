@@ -1,5 +1,5 @@
 .ONESHELL:
-.PHONY: clean lambda
+.PHONY: clean image lambda publish
 
 oarder.zip: poetry.lock pyproject.toml oarder/*.py tests/*.py
 	mkdir -p package
@@ -12,6 +12,13 @@ clean:
 	rm -rf package
 	rm -rf dist
 
-lambda: Dockerfile
+image: Dockerfile
 	docker build -t oarder .
 
+lambda: image
+	docker create --name oarder-extract oarder
+	docker cp oarder-extract:/usr/src/oarder/oarder.zip .
+	docker rm oarder-extract
+
+publish:
+	aws s3 cp oarder.zip s3://oa-sbx-artifacts-9863/oarder.zip
